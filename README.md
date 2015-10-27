@@ -1,5 +1,5 @@
 # mruby-webapi
-A Web API framework for mruby mounted on [mruby-hibari](https://github.com/kentaro/mruby-hibari).
+A Web API framework for mruby.
 Create web app APIs respond to various formats.
 
 ## install by mrbgems

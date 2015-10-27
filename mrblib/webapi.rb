@@ -1,18 +1,25 @@
 module Rack
-  class WebAPI < Hibari::App
+  class WebAPI
     include Rack::R3
+    def call(env)
+      super({'REQUEST_METHOD' => env["REQUEST_METHOD"], 'PATH_INFO' => env["PATH_INFO"]})
+    end
 
-    def build
+    def run
+      engine = if Object.const_defined?(:Nginx)
+                'nginx'
+               elsif Object.const_defined?(:Apache)
+                'apache'
+               else # presume it's h2o
+                'h2o'
+               end
 
-      result = Rack::R3.call({'REQUEST_METHOD' => @req.request_method, 'PATH_INFO' => @req.path_info})
-      @res.code = result[0]
-
-      result[1].each do |key, value|
-        @res.headers[key] = value
+      case engine
+      when 'nginx', 'apache'
+        Kernel.run(self)
+      when 'h2o'
+        self
       end
-
-      @res.body.push result[2]
-
     end
   end
 end
